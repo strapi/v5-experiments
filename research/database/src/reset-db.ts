@@ -102,8 +102,8 @@ export async function resetDB() {
 
   await conn.schema.createTable("homepage_link", (table) => {
     table.string("id").primary();
-    table.string("homepage_id").notNullable();
-    table.string("item_id").notNullable();
+    table.string("homepage_doc_id").notNullable();
+    table.string("item_doc_id").notNullable();
     table.string("item_type").notNullable();
 
     table.string("pivot_version_id").nullable();
