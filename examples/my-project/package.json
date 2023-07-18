@@ -1,0 +1,15 @@
+{
+  "name": "example",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "18.15.11",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@strapi/core": "workspace:*",
+    "@strapi/strapi": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc"
+  }
+}

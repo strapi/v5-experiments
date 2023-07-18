@@ -1,0 +1,15 @@
+{
+  "name": "@strapi/core",
+  "main": "src/index.ts",
+  "publishConfig": {
+    "main": "lib/index.js",
+    "typings": "lib/index.d.ts"
+  },
+  "scripts": {
+    "build": "tsc -p"
+  },
+  "devDependencies": {
+    "@types/node": "18.15.11",
+    "tsconfig": "workspace:*"
+  }
+}

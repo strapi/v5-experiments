@@ -1,0 +1,13 @@
+{
+  "name": "packaging-esbuild",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "esbuild": "^0.17.18",
+    "koa": "^2.14.2"
+  },
+  "scripts": {
+    "dev": "",
+    "build": "esbuild app.ts --bundle --outfile=dist/app.js --platform=node --minify --packages=external"
+  }
+}

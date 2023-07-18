@@ -1,0 +1,199 @@
+# The begining of the script
+Document
+----
+id PK cuid
+# use this unique global slug to reference in relations (make i18n & co much simpler & relation management much faster)
+globaSlug string 
+# if we don't need that info then the doc table is not necessary
+created_at datetime
+updated_at datetime
+created_by 
+updated_by
+
+# This seems quite unecessary unless version had shared fields but that's not the case
+#Document_version
+#-----
+#id PK cuid
+#docId FK >- Document.id
+#releaseId FK >- Releases.id
+
+
+Article
+----
+id PK cuid
+docId FK >- Document.id
+versionId cuid # multiple lines will have the same versionId - mhe not fan
+# Either we introduce the release system now or we do it in 2 steps wiht a migration
+releaseId cuid FK >- Releases.id 
+# or
+published_at datetime
+slug string
+title
+description
+locale
+channel
+created_at datetime
+updated_at datetime
+created_by 
+updated_by
+
+# Relations are on the versions level and not localizable (doc to doc / version to doc / version to version ?)
+Article_Category
+----
+article_id cuid FK >- Article.id
+category_id cuid FK >- Category.id
+
+Article_links
+rel Category
+----
+article_id FK >- Article.id
+target_doc_id FK *
+target_doc_type table
+field string
+order int
+
+
+Category
+----
+id PK cuid
+docId FK >- Document.id
+versionId cuid
+# Either we introduce the release system now or we do it in 2 steps wiht a migration
+releaseId cuid FK >- Releases.id 
+# or
+published_at datetime
+
+
+# this works well with one dimension & no relation only -> doesn't scale to multiple relations
+#Article_locales
+#----
+#id PK cuid
+#articleId cuid FK >- Article.id
+#locale string
+#channel string
+#f_title string
+#f_sth_else string
+
+
+
+# compo at the version level 
+Article_components
+rel Component.id
+-----
+articleId cuid FK >- Article.id
+compoId cuid FK
+# for polymorphism
+compoType string 
+field string
+order int
+
+
+Component
+----
+id PK cuid
+...
+
+
+
+Releases
+-----
+id PK cuid
+slug string unique
+
+# store history of a version. But this should be on the locale level which is split between compo & content table so we need to 
+History
+-----
+id PK cuid
+versionId FK >- Article.id
+date datetime
+changes json
+
+
+
+-----
+
+
+
+Article
+----
+id PK cuid
+docId int
+versionId cuid # multiple lines will have the same versionId - mhe not fan
+published_at datetime
+slug string
+title
+description
+locale
+channel
+created_at datetime
+updated_at datetime
+created_by 
+updated_by
+
+# this can implement version to doc & entry to doc
+# however this does much more duplication
+Article_Author
+----
+article_id cuid FK >- Article.id
+author_doc_id cuid FK >- Author.docId
+
+
+# many many
+Article_Categories
+----
+article_id cuid FK >- Article.id
+category_doc_id cuid FK >- Category.docId
+order int
+
+# non localized
+Author
+----
+id PK cuid
+docId int
+versionId cuid
+
+
+Page
+-----
+id PK cuid
+docId cuid
+versionId cuid
+
+
+Menu
+----
+id PK cuid
+docId int
+versionId cuid
+
+
+# non localized
+Menu_ItemLink
+rel Article
+rel Page
+----
+menu_id cuid FK >- Menu.id
+item_link_doc_id cuid FK 
+item_link_type string
+order
+
+Category
+----
+id cuid PK
+docId cuid
+
+
+Homepage
+----
+id PK cuid
+title varchar
+
+# localized
+HomePage_links
+rel Article
+rel Page
+----
+homepage_id cuid FK >- Homepage.id
+item_link_doc_id cuid FK
+item_link_type string
+order
