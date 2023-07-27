@@ -17,13 +17,11 @@ const createTable = (name: string, cols: Columns = {}) => {
   return conn.schema.createTable(name, (table) => {
     table.increments("id");
     table.string("doc_id").notNullable();
-    table.string("version_id").notNullable();
-    table.datetime("published_at").nullable();
-    table.string("locale").notNullable();
+    table.string("publicationState").notNullable().defaultTo("draft");
+    table.datetime("published_at").nullable().defaultTo(null);
+    table.string("locale").notNullable().defaultTo("en");
 
-    // table.index("doc_id");
-    // table.index("version_id");
-    // table.index(["doc_id", "version_id"], "doc_id_version_id");
+    table.unique(["doc_id", "locale", "publicationState"]);
 
     Object.keys(cols).forEach((colName) => {
       const col = cols[colName];
@@ -68,11 +66,11 @@ export async function resetDB() {
 
   await conn.schema.createTable("article_author", (table) => {
     table.increments("id");
-    table.string("article_doc_id").nullable();
-    table.string("author_doc_id").nullable();
+    table.string("article_doc_id").notNullable();
+    table.string("author_doc_id").notNullable();
 
-    table.string("pivot_version_id").nullable();
-    table.string("pivot_locale").nullable();
+    table.string("pivot_publicationState").notNullable();
+    table.string("pivot_locale").notNullable();
 
     // table.index("article_doc_id");
     // table.index("author_doc_id");
@@ -87,8 +85,8 @@ export async function resetDB() {
     table.string("article_doc_id").notNullable();
     table.string("category_doc_id").notNullable();
 
-    table.string("pivot_version_id").nullable();
-    table.string("pivot_locale").nullable();
+    table.string("pivot_publicationState").notNullable();
+    table.string("pivot_locale").notNullable();
 
     // table.foreign("article_doc_id").references("article.doc_id");
     // table.foreign("category_doc_id").references("category.doc_id");
@@ -106,8 +104,8 @@ export async function resetDB() {
     table.string("item_doc_id").notNullable();
     table.string("item_type").notNullable();
 
-    table.string("pivot_version_id").nullable();
-    table.string("pivot_locale").nullable();
+    table.string("pivot_publicationState").notNullable();
+    table.string("pivot_locale").notNullable();
 
     table.integer("order");
 
@@ -121,6 +119,10 @@ export async function resetDB() {
 async function seedDB() {
   for (const tableName of Object.keys(data)) {
     const tableData = data[tableName];
+    if (tableData.length === 0) {
+      continue;
+    }
+
     await conn(tableName).insert(tableData);
   }
 }

@@ -197,3 +197,44 @@ homepage_id cuid FK >- Homepage.id
 item_link_doc_id cuid FK
 item_link_type string
 order
+
+
+----------
+
+Article
+----
+id PK cuid
+
+Author
+----
+id PK cuid
+
+Article_V
+----
+id PK cuid
+docId cuid FK >- Article.id
+versionId cuid # multiple lines will have the same versionId - mhe not fan
+published_at datetime
+slug string
+title
+description
+locale
+channel
+created_at datetime
+updated_at datetime
+created_by 
+updated_by
+
+# this can implement version to doc & entry to doc
+# however this does much more duplication
+Article_Author
+----
+article_id cuid FK >- Article.id
+author_id cuid FK >- Author.id
+pivot_locale
+pivot_version
+
+Author_v
+----
+id PK cuid
+docId cuid FK >- Author.id
