@@ -17,4 +17,4 @@ export class CategoryModule extends Module {
   destroy() {}
 }
 
-export default 
+export default () => {}
